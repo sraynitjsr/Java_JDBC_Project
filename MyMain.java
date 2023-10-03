@@ -9,7 +9,7 @@ public class JDBCDemo {
         String url = "jdbc:mysql://localhost:3306/my_database_name";
         String username = "my_username";
         String password = "my_password";
-        
+
         JDBCManager jdbcManager = JDBCManager.getInstance(url, username, password);
 
         try {
@@ -36,7 +36,6 @@ class JDBCManager {
     private String username;
     private String password;
     private Connection connection;
-    private static JDBCManager instance;
 
     private JDBCManager(String url, String username, String password) {
         this.url = url;
@@ -44,11 +43,16 @@ class JDBCManager {
         this.password = password;
     }
 
+    private static class SingletonHelper {
+        private static final JDBCManager INSTANCE = new JDBCManager(
+                "jdbc:mysql://localhost:3306/my_database_name",
+                "my_username",
+                "my_password"
+        );
+    }
+
     public static JDBCManager getInstance(String url, String username, String password) {
-        if (instance == null) {
-            instance = new JDBCManager(url, username, password);
-        }
-        return instance;
+        return SingletonHelper.INSTANCE;
     }
 
     public void connect() throws SQLException {
