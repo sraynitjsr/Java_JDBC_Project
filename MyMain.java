@@ -4,13 +4,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class MyMain {
+public class JDBCDemo {
     public static void main(String[] args) {
         String url = "jdbc:mysql://localhost:3306/my_database_name";
         String username = "my_username";
         String password = "my_password";
-
-        JDBCManager jdbcManager = new JDBCManager(url, username, password);
+        
+        JDBCManager jdbcManager = JDBCManager.getInstance(url, username, password);
 
         try {
             jdbcManager.connect();
@@ -36,11 +36,19 @@ class JDBCManager {
     private String username;
     private String password;
     private Connection connection;
+    private static JDBCManager instance;
 
-    public JDBCManager(String url, String username, String password) {
+    private JDBCManager(String url, String username, String password) {
         this.url = url;
         this.username = username;
         this.password = password;
+    }
+
+    public static JDBCManager getInstance(String url, String username, String password) {
+        if (instance == null) {
+            instance = new JDBCManager(url, username, password);
+        }
+        return instance;
     }
 
     public void connect() throws SQLException {
